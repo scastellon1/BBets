@@ -9,11 +9,14 @@ date: "2024-09-27"
 This assignment has three questions:  
 
 1. in a class of 35 students, Dr. J bets $1 against student's $1  that at least 2 students have the same birthday, month, day.
-Find the probability thatat least two student have the same birthday.  If 26 students in the class take the bet how much is Dr. J expected to win/lose.   How much should Dr. J wager against the student's $1 to make this a fair bet?
+Find the probability that at least two student have the same birthday.  If 26 students in the class take the bet how much is Dr. J expected to win/lose.   How much should Dr. J wager against the student's $1 to make this a fair bet?
+  The probability of two students have the same birthday is 0.8, Dr. J is expected is win 16.29. For it to be a fair bet Dr. J would have to wager 4.35
 
-2. Assume class size is 26 instead of 35.  With the same bet ($1 ot $1) what is the probability Dr. J wins the bet now.  If 20 of the 26 students make the bet, what is Dr. J's expected profit/loss?
+2. Assume class size is 26 instead of 35.  With the same bet ($1 ot $1) what is the probability Dr. J wins the bet now.  If 20 of the 26 students make the bet, what is Dr. J's expected profit/loss? 
+ The probability is 0.5 and the expected profit is 4.
 
-3. What size class (how many students) makes the $1 againt $1 a fair bet?
+3. What size class (how many students) makes the $1 againt $1 a fair bet? 
+  The class size that will make the $1 against $1 fair is 23. 
 
 ```{r setup, include=FALSE}
 # Load necessary libraries
@@ -87,6 +90,95 @@ print(paste("ev=",EV))
 ```{r}
 FAIR=(mean_probability)/(1-mean_probability)
 print(paste("fairbet=",FAIR))
+```
+## Question 2 
+
+
+```{r}
+# Function to simulate the birthday problem
+simulate_birthdays <- function(class_size = 26) {
+  # Generate random birthdays for the class
+  birthdays <- sample(1:365, class_size, replace = TRUE)
+  
+  # Check for duplicates
+  any_duplicated <- length(unique(birthdays)) < class_size
+  
+  # Return TRUE if there are duplicates, FALSE otherwise
+  return(any_duplicated)
+}
+
+# Number of simulations
+n_simulations <- 100
+
+# Vector to store probabilities
+probabilities <- numeric(n_simulations)
+
+# Run simulations
+for (i in 1:n_simulations) {
+  # Count how many times at least one duplicate birthday occurs
+  duplicates_count <- sum(replicate(1000, simulate_birthdays()))
+  
+  # Calculate probability
+  probabilities[i] <- duplicates_count / 1000
+}
+
+# Display probabilities
+```
+
+```{r}
+# Calculate mean of probabilities
+mean_probability <- mean(probabilities)
+
+# Print mean
+cat("Mean = ", mean_probability, "\n")
+
+# Calculate 95% confidence interval
+ci <- quantile(probabilities, probs = c(0.025, 0.975))
+
+# Print confidence interval
+cat("95% Confidence Interval: [", ci[1], ", ", ci[2], "]\n")
+```
+
+```{r}
+EV= mean_probability*20-(1-mean_probability)*20
+print(paste("ev=",EV))
+```
+## Question 3
+
+```{r}
+# Function to simulate the birthday problem
+simulate_birthdays <- function(class_size = 23) {
+  # Generate random birthdays for the class
+  birthdays <- sample(1:365, class_size, replace = TRUE)
+  
+  # Check for duplicates
+  any_duplicated <- length(unique(birthdays)) < class_size
+  
+  # Return TRUE if there are duplicates, FALSE otherwise
+  return(any_duplicated)
+}
+
+# Number of simulations
+n_simulations <- 100
+
+# Vector to store probabilities
+probabilities <- numeric(n_simulations)
+
+# Run simulations
+for (i in 1:n_simulations) {
+  # Count how many times at least one duplicate birthday occurs
+  duplicates_count <- sum(replicate(1000, simulate_birthdays()))
+  
+  # Calculate probability
+  probabilities[i] <- duplicates_count / 1000
+}
+mean_probability= mean(probabilities)
+# Display probabilities
+```
+
+```{r}
+EV= mean_probability*20-(1-mean_probability)*20
+print(paste("ev=",EV))
 ```
 
 
